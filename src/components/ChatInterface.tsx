@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { ChatMessage } from './ChatMessage'
 import { VoiceInput } from './VoiceInput'
-import { SaveInspirationModal } from './SaveInspirationModal'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Send, Lightbulb, StopCircle, Save, Sparkles } from 'lucide-react'
@@ -21,6 +21,7 @@ interface ChatInterfaceProps {
 }
 
 export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
+  const router = useRouter()
   const [messages, setMessages] = useState<ChatMessageType[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -28,7 +29,6 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
   const [isSavingInspiration, setIsSavingInspiration] = useState(false)
   const [lastSavedMessageCount, setLastSavedMessageCount] = useState(0)
-  const [showSaveModal, setShowSaveModal] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -36,6 +36,13 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
   useEffect(() => {
     scrollToBottom()
   }, [messages, isTyping])
+
+  // Store messages whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('currentChatMessages', JSON.stringify(messages))
+    }
+  }, [messages])
 
   useEffect(() => {
     // Initialize with a greeting message
@@ -253,16 +260,10 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
 
   const handleSaveInspiration = () => {
     if (messages.length <= 1) return
-    setShowSaveModal(true)
-  }
-
-  const handleSaveModalClose = () => {
-    setShowSaveModal(false)
-  }
-
-  const handleSaveModalSave = (inspiration: any) => {
-    setShowSaveModal(false)
-    onInspirationGenerated?.(inspiration)
+    // Store messages in localStorage for the save page
+    localStorage.setItem('currentChatMessages', JSON.stringify(messages))
+    // Navigate to save page
+    router.push(`/save-inspiration${currentSessionId ? `?sessionId=${currentSessionId}` : ''}`)
   }
 
   // Auto-save logic when conversation reaches certain length
@@ -390,13 +391,6 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
         </form>
       </div>
 
-      {/* Save Inspiration Modal */}
-      <SaveInspirationModal
-        isOpen={showSaveModal}
-        onClose={handleSaveModalClose}
-        messages={messages}
-        onSave={handleSaveModalSave}
-      />
     </div>
   )
 }
