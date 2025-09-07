@@ -4,9 +4,10 @@ import { inspirationAnalyzer } from '@/lib/inspiration-analyzer'
 
 export async function POST(
   request: NextRequest, 
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const supabase = createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -21,7 +22,7 @@ export async function POST(
     }
 
     // Save all messages to the session
-    const messagesData = messages.map((msg: any, index: number) => ({
+    const messagesData = messages.map((msg: { role: 'user' | 'assistant'; content: string }, index: number) => ({
       session_id: params.id,
       role: msg.role,
       content: msg.content,
@@ -57,7 +58,7 @@ export async function POST(
 
     // Generate and save inspiration analysis
     const conversationContent = messages
-      .map((msg: any) => `${msg.role === 'user' ? '用户' : 'AI'}: ${msg.content}`)
+      .map((msg: { role: 'user' | 'assistant'; content: string }) => `${msg.role === 'user' ? '用户' : 'AI'}: ${msg.content}`)
       .join('\n\n')
 
     let inspiration = null

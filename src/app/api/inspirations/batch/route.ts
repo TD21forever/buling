@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import type { BatchOperationResult, Inspiration } from '@/lib/types'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No inspirations selected' }, { status: 400 })
     }
 
-    let results: any[] = []
+    let results: BatchOperationResult[] = []
 
     switch (action) {
       case 'delete':
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function handleBatchDelete(supabase: any, userId: string, inspirationIds: string[]) {
+async function handleBatchDelete(supabase: any, userId: string, inspirationIds: string[]): Promise<BatchOperationResult[]> {
   const results = await Promise.all(
     inspirationIds.map(async (id) => {
       try {
@@ -91,8 +92,8 @@ async function handleBatchDelete(supabase: any, userId: string, inspirationIds: 
         if (error) throw error
 
         return { id, success: true }
-      } catch (error: any) {
-        return { id, success: false, error: error.message }
+      } catch (error: unknown) {
+        return { id, success: false, error: error instanceof Error ? error.message : 'Unknown error' }
       }
     })
   )
@@ -106,7 +107,7 @@ async function handleBatchUpdateCategories(
   inspirationIds: string[], 
   newCategories: string[], 
   operation: 'add' | 'remove' | 'replace'
-) {
+): Promise<BatchOperationResult[]> {
   const validCategories = ['work', 'life', 'creation', 'learning']
   const filteredCategories = newCategories.filter(cat => validCategories.includes(cat))
 
@@ -159,8 +160,8 @@ async function handleBatchUpdateCategories(
         if (updateError) throw updateError
 
         return { id, success: true, categories: updatedCategories }
-      } catch (error: any) {
-        return { id, success: false, error: error.message }
+      } catch (error: unknown) {
+        return { id, success: false, error: error instanceof Error ? error.message : 'Unknown error' }
       }
     })
   )
@@ -174,7 +175,7 @@ async function handleBatchUpdateTags(
   inspirationIds: string[], 
   newTags: string[], 
   operation: 'add' | 'remove' | 'replace'
-) {
+): Promise<BatchOperationResult[]> {
   const results = await Promise.all(
     inspirationIds.map(async (id) => {
       try {
@@ -215,8 +216,8 @@ async function handleBatchUpdateTags(
         if (updateError) throw updateError
 
         return { id, success: true, tags: updatedTags }
-      } catch (error: any) {
-        return { id, success: false, error: error.message }
+      } catch (error: unknown) {
+        return { id, success: false, error: error instanceof Error ? error.message : 'Unknown error' }
       }
     })
   )
@@ -256,7 +257,7 @@ async function handleBatchExport(
   }
 }
 
-function generateMarkdownExport(inspirations: any[]) {
+function generateMarkdownExport(inspirations: Inspiration[]) {
   const content = inspirations.map(inspiration => {
     const categories = inspiration.categories?.map((cat: string) => `#${cat}`).join(' ') || ''
     const tags = inspiration.tags?.map((tag: string) => `#${tag}`).join(' ') || ''
@@ -285,7 +286,7 @@ ${inspiration.content}
   }
 }
 
-function generateTextExport(inspirations: any[]) {
+function generateTextExport(inspirations: Inspiration[]) {
   const content = inspirations.map(inspiration => {
     const categories = inspiration.categories?.join(', ') || ''
     const tags = inspiration.tags?.join(', ') || ''

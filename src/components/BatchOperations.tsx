@@ -5,8 +5,6 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { 
   Download, 
-  Tag, 
-  Folder, 
   Trash2, 
   Plus, 
   Minus, 
@@ -25,7 +23,14 @@ interface BatchOperationsProps {
 export function BatchOperations({ selectedIds, onComplete, onCancel }: BatchOperationsProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [activeOperation, setActiveOperation] = useState<string | null>(null)
-  const [operationData, setOperationData] = useState<any>({})
+  const [operationData, setOperationData] = useState<{ 
+    categories?: string[]; 
+    tags?: string[]; 
+    format?: string; 
+    tagsInput?: string; 
+    categoriesInput?: string;
+    confirmed?: boolean;
+  }>({})
 
   const operations = [
     {
@@ -96,7 +101,7 @@ export function BatchOperations({ selectedIds, onComplete, onCancel }: BatchOper
     try {
       setIsLoading(true)
 
-      const requestData: any = {
+      const requestData: { action: string; inspirationIds: string[]; data: typeof operationData } = {
         action: activeOperation,
         inspirationIds: selectedIds,
         data: operationData
@@ -132,7 +137,7 @@ export function BatchOperations({ selectedIds, onComplete, onCancel }: BatchOper
     }
   }
 
-  const downloadFile = (fileData: any) => {
+  const downloadFile = (fileData: { data: string; filename: string; mimeType?: string }) => {
     const blob = new Blob([fileData.data], { type: fileData.mimeType || 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')

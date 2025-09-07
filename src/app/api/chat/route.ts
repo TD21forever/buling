@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const siliconFlowAPI = new SiliconFlowAPI(process.env.SILICON_FLOW_API_KEY!)
     
     // Convert messages to SiliconFlow format
-    const siliconFlowMessages: SiliconFlowMessage[] = messages.map((msg: any) => ({
+    const siliconFlowMessages: SiliconFlowMessage[] = messages.map((msg: { role: 'user' | 'assistant'; content: string }) => ({
       role: msg.role,
       content: msg.content
     }))

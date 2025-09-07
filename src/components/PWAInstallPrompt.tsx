@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Download, Smartphone, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from './ui/button'
-import { X, Download, Smartphone } from 'lucide-react'
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[]
@@ -26,7 +26,7 @@ export function PWAInstallPrompt() {
 
     // Check if app is already installed (running in standalone mode)
     const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true
+      (window.navigator as { standalone?: boolean }).standalone === true
 
     setIsStandalone(isInStandaloneMode)
 
@@ -156,11 +156,11 @@ export function PWAInstallPrompt() {
               </div>
               <div className="flex items-center space-x-2">
                 <span>2.</span>
-                <span>选择"添加到主屏幕"</span>
+                <span>选择添加到主屏幕</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span>3.</span>
-                <span>点击右上角的"添加"</span>
+                <span>点击右上角的添加</span>
               </div>
             </div>
           </div>

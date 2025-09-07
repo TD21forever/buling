@@ -10,9 +10,8 @@ import { Lightbulb, Archive, MessageSquare } from 'lucide-react'
 export default function Home() {
   const [currentView, setCurrentView] = useState<'chat' | 'inspirations'>('chat')
   const [inspirationCount, setInspirationCount] = useState(0)
-  const [hasVisitedLibrary, setHasVisitedLibrary] = useState(false)
 
-  const handleInspirationGenerated = async (inspiration: any) => {
+  const handleInspirationGenerated = async (inspiration: unknown) => {
     try {
       // Save inspiration to database
       const response = await fetch('/api/inspirations', {
@@ -35,7 +34,6 @@ export default function Home() {
   }
 
   const handleViewLibrary = () => {
-    setHasVisitedLibrary(true)
     setCurrentView('inspirations')
   }
 

@@ -12,7 +12,7 @@ interface SaveInspirationModalProps {
   isOpen: boolean
   onClose: () => void
   messages: ChatMessageType[]
-  onSave: (inspiration: any) => void
+  onSave: (inspiration: InspirationAnalysis) => void
 }
 
 interface InspirationAnalysis {

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 
 const VALID_CATEGORIES = ['work', 'life', 'creation', 'learning']
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()

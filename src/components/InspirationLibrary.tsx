@@ -1,24 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Inspiration } from '@/lib/types'
-import { InspirationCard } from './InspirationCard'
-import { Button } from './ui/button'
-import { Input } from './ui/input'
-import { 
-  Search, 
-  Filter, 
-  SortAsc, 
-  SortDesc, 
-  Grid, 
+import { cn } from '@/lib/utils'
+import {
+  Archive,
+  Check,
+  Grid,
   List,
   Plus,
   RefreshCw,
-  Archive,
-  Check,
+  Search,
+  SortAsc,
+  SortDesc,
   X
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react'
+import { InspirationCard } from './InspirationCard'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 interface InspirationLibraryProps {
   onCreateNew?: () => void
@@ -247,7 +246,7 @@ export function InspirationLibrary({ onCreateNew }: InspirationLibraryProps) {
 
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) => setSortBy(e.target.value as 'created_at' | 'updated_at' | 'title')}
             className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="created_at">创建时间</option>

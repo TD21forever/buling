@@ -1,21 +1,19 @@
 'use client'
 
-import { useState } from 'react'
 import { Inspiration } from '@/lib/types'
-import { formatDate, truncateText } from '@/lib/utils'
-import { Button } from './ui/button'
-import { Badge } from './ui/badge'
-import { 
-  MoreVertical, 
-  Edit, 
-  Trash, 
-  Copy, 
+import { cn, formatDate, truncateText } from '@/lib/utils'
+import {
+  Calendar,
+  Copy,
+  Edit,
+  Folder,
+  MoreVertical,
   Share,
   Tag,
-  Folder,
-  Calendar
+  Trash
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import { Button } from './ui/button'
 
 interface InspirationCardProps {
   inspiration: Inspiration

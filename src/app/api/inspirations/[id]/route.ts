@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const params = await context.params
     const supabase = createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -36,8 +37,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const params = await context.params
     const supabase = createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -48,7 +50,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const updates = await request.json()
     
     // Remove fields that shouldn't be updated
-    const { id, user_id, created_at, ...allowedUpdates } = updates
+    const { id: _, user_id: __, created_at: ___, ...allowedUpdates } = updates
     allowedUpdates.updated_at = new Date().toISOString()
 
     const { data, error } = await supabase
@@ -78,8 +80,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const params = await context.params
     const supabase = createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 

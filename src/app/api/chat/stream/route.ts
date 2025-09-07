@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     // Convert messages to SiliconFlow format
     const siliconFlowMessages: SiliconFlowMessage[] = [
       systemPrompt,
-      ...messages.map((msg: any) => ({
+      ...messages.map((msg: { role: 'user' | 'assistant'; content: string }) => ({
         role: msg.role,
         content: msg.content
       }))
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
                     fullResponse += delta
                     controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({ content: delta })}\n\n`))
                   }
-                } catch (e) {
+                } catch {
                   // Skip invalid JSON
                 }
               }

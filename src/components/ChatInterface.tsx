@@ -6,7 +6,7 @@ import { ChatMessage } from './ChatMessage'
 import { VoiceInput } from './VoiceInput'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
-import { Send, Lightbulb, StopCircle, Save, Sparkles } from 'lucide-react'
+import { Send, StopCircle, Save, Sparkles } from 'lucide-react'
 import { ChatMessage as ChatMessageType } from '@/lib/types'
 import { generateId } from '@/lib/utils'
 
@@ -27,7 +27,7 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
-  const [isSavingInspiration, setIsSavingInspiration] = useState(false)
+  const [isSavingInspiration] = useState(false)
   const [lastSavedMessageCount, setLastSavedMessageCount] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -181,7 +181,7 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
                   )
                 )
               }
-            } catch (e) {
+            } catch {
               // Skip invalid JSON
             }
           }
@@ -197,8 +197,8 @@ export function ChatInterface({ onInspirationGenerated }: ChatInterfaceProps) {
         await analyzeForInspiration(conversationContent)
       }
 
-    } catch (error: any) {
-      if (error.name !== 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name !== 'AbortError') {
         console.error('Chat error:', error)
         const errorMessage: ChatMessageType = {
           id: generateId(),

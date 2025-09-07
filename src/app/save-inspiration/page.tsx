@@ -1,20 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Save, Loader2, Tag, Sparkles } from 'lucide-react'
+import { ArrowLeft, Loader2, Save } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function SaveInspirationPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const sessionId = searchParams.get('sessionId')
   
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [messages, setMessages] = useState<any[]>([])
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant' | 'system'; content: string }[]>([])
   const [editedTitle, setEditedTitle] = useState('')
   const [editedSummary, setEditedSummary] = useState('')
   const [editedCategories, setEditedCategories] = useState<string[]>([])
@@ -38,7 +36,7 @@ export default function SaveInspirationPage() {
     }
   }, [])
 
-  const analyzeConversation = async (chatMessages: any[]) => {
+  const analyzeConversation = async (chatMessages: { role: 'user' | 'assistant' | 'system'; content: string }[]) => {
     setIsAnalyzing(true)
     try {
       const conversationContent = chatMessages

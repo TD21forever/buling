@@ -12,7 +12,7 @@ export interface Inspiration {
 
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
 }
@@ -33,4 +33,19 @@ export interface User {
   id: string;
   email: string;
   created_at: string;
+}
+
+export interface SupabaseClient {
+  from: (table: string) => any;
+  auth: {
+    getUser: () => Promise<{ data: { user: User | null }; error: any }>;
+  };
+}
+
+export interface BatchOperationResult {
+  id: string;
+  success: boolean;
+  error?: string;
+  categories?: string[];
+  tags?: string[];
 }

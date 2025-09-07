@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
-import withPWA from 'next-pwa';
 
 const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default withPWA({
+// 使用 require 来避免类型冲突
+const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
@@ -28,4 +28,6 @@ export default withPWA({
       },
     },
   ],
-})(nextConfig);
+});
+
+export default withPWA(nextConfig);

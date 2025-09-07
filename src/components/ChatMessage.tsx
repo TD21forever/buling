@@ -1,10 +1,9 @@
 'use client'
 
-import React from 'react'
 import { ChatMessage as ChatMessageType } from '@/lib/types'
-import { formatDate } from '@/lib/utils'
-import { cn } from '@/lib/utils'
-import { User, Bot, Sparkles } from 'lucide-react'
+import { cn, formatDate } from '@/lib/utils'
+import { Sparkles, User } from 'lucide-react'
+import React from 'react'
 
 interface ChatMessageProps {
   message: ChatMessageType
